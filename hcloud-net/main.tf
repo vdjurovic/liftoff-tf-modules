@@ -3,7 +3,7 @@ resource "hcloud_network" "network" {
   for_each = { for ntwrk in var.hcloud_networks : ntwrk.name => ntwrk }
   name     = each.value.name
   ip_range = each.value.ip_range
-  labels =  merge(var.hcloud_global_labels, each.value.labels)
+  labels   = merge(var.hcloud_global_labels, each.value.labels)
 }
 
 locals {
@@ -28,8 +28,8 @@ resource "hcloud_network_subnet" "subnet" {
 }
 
 resource "hcloud_network_route" "route" {
-  for_each = {for rt  in var.hcloud_net_routes: rt.network_id => rt }
-  network_id = each.key
+  for_each    = { for rt in var.hcloud_net_routes : rt.network_id => rt }
+  network_id  = each.key
   destination = each.value.destination
-  gateway = each.value.gateway
+  gateway     = each.value.gateway
 }

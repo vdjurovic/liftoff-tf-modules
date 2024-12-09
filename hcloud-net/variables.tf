@@ -5,7 +5,7 @@ variable "hcloud_networks" {
     ip_range                 = string
     delete_protection        = optional(bool)
     expose_routes_to_vswitch = optional(bool)
-    labels = optional(map(string))
+    labels                   = optional(map(string))
     subnets = optional(set(object({
       type       = string
       region     = string
@@ -13,20 +13,20 @@ variable "hcloud_networks" {
       vswitch_id = optional(string)
     })))
   }))
-  default = [ ]
+  default = []
 }
 
 variable "hcloud_net_routes" {
   type = set(object({
-    network_id = string
+    network_id  = string
     destination = string
-    gateway = string
+    gateway     = string
   }))
-  default = [ ]
+  default = []
 }
 
 variable "hcloud_global_labels" {
-   type        = map(string)
+  type        = map(string)
   default     = {}
   description = "Labels to be applied to all resources. Can be overriden on resource level"
 }
