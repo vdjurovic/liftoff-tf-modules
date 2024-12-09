@@ -30,7 +30,7 @@ jobs:
           initial_version: 1.0.0
   validate-license-info:
     runs-on: ubuntu-latest
-     steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
