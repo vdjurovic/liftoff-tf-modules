@@ -1,3 +1,6 @@
+# Copyright 2024 Bitshift D.O.O
+# SPDX-License-Identifier: MPL-2.0
+
 
 locals {
   network_ip_range_map = { for net in data.hcloud_network.networks : net.id => net.ip_range }

@@ -1,3 +1,6 @@
+# Copyright 2024 Bitshift D.O.O
+# SPDX-License-Identifier: MPL-2.0
+
 
 locals {
   network_names = concat(var.hcloud_server_config.private_networks, flatten(var.hcloud_server_list[*].private_networks))

@@ -1,3 +1,6 @@
+# Copyright 2024 Bitshift D.O.O
+# SPDX-License-Identifier: MPL-2.0
+
 
 resource "hcloud_network" "network" {
   for_each = { for ntwrk in var.hcloud_networks : ntwrk.name => ntwrk }

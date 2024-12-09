@@ -1,3 +1,6 @@
+# Copyright 2024 Bitshift D.O.O
+# SPDX-License-Identifier: MPL-2.0
+
 
 resource "hcloud_server" "server" {
   count       = var.hcloud_server_config.num_servers
