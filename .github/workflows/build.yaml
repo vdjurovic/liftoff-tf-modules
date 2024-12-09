@@ -1,0 +1,30 @@
+name: Build pipeline
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+jobs:
+  validate-configuration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.1"
+          terraform_wrapper: false
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive .
+        continue-on-error: false
+      - name: Configure version information
+        id: calculate-version
+        if: ${{ github.event_name == 'push' }}
+        uses: bitshifted/git-auto-semver@v1
+        with:
+          create_tag: true
+          initial_version: 1.0.0
