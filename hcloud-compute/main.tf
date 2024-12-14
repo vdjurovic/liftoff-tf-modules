@@ -9,7 +9,7 @@ resource "hcloud_server" "server" {
   server_type = var.hcloud_server_config.instance_type
   location    = try(var.hcloud_server_config.location, null)
   datacenter  = try(var.hcloud_server_config.datacenter, null)
-  user_data   = var.hcloud_server_config.user_data_file_path != null ? file(var.hcloud_server_config.user_data_file_path) : null
+  user_data   = var.hcloud_server_config.user_data_file_path != null ? file("${var.hcloud_server_config.user_data_file_path}") : null
   ssh_keys    = var.hcloud_server_config.ssh_key_names
   # configure public IP addresses
   public_net {
