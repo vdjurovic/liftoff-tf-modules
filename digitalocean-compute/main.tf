@@ -36,7 +36,7 @@ resource "digitalocean_droplet" "named_server" {
   size        = each.value.instance_type
   region      = each.value.region
   user_data   = each.value.user_data_file_path != null ? file("${each.value.user_data_file_path}") : null
-  ssh_keys    = toset([for kn in each.value.ssh_key_names : local.ssh_key_name_id_map[kn]])
+  ssh_keys    = toset([for kn in each.value.ssh_key_names : local.ssh_key_name_id_map[kn] if contains(keys(local.ssh_key_name_id_map), kn)])
   ipv6        = each.value.enable_public_ipv6
   tags        = length(each.value.tags) > 0 ? each.value.tags : var.global_tags
   resize_disk = each.value.resize_disk

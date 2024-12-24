@@ -10,17 +10,17 @@ output "server_info" {
   description = "Basic information about created servers"
   value = merge({ for srv in digitalocean_droplet.droplet : srv.name => {
     public_ip_v4 = srv.ipv4_address
-    private_net_info = {
+    private_net_info = [{
       net_id     = data.digitalocean_vpc.target_vpcs[var.docean_server_config.vpc_name].id
       ip_address = srv.ipv4_address_private
       ip_range   = data.digitalocean_vpc.target_vpcs[var.docean_server_config.vpc_name].ip_range
-    }
+    }]
     } }, { for srv in digitalocean_droplet.named_server : srv.name => {
     public_ip_v4 = srv.ipv4_address
-    private_net_info = {
+    private_net_info = [{
       net_id     = data.digitalocean_vpc.target_vpcs[local.server_name_vpc_name_map[srv.name]].id
       ip_address = srv.ipv4_address_private
       ip_range   = data.digitalocean_vpc.target_vpcs[local.server_name_vpc_name_map[srv.name]].ip_range
-    }
+    }]
   } })
 }
