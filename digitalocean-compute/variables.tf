@@ -24,6 +24,7 @@ variable "docean_server_config" {
     vpc_name            = optional(string)
     num_servers         = optional(number, 1)
     project_name        = optional(string)
+    dns_zone            = optional(string)
   })
   default = {
     num_servers = 0
@@ -46,6 +47,7 @@ variable "docean_server_list" {
     enable_backups      = optional(bool, false)
     vpc_name            = optional(string)
     project_name        = optional(string)
+    dns_zone            = optional(string)
   }))
   default     = []
   description = "List of different droplet configurations"

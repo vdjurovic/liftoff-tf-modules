@@ -25,6 +25,7 @@ variable "hcloud_server_list" {
     enable_backups           = optional(bool, false)
     enable_delete_protection = optional(bool, false)
     private_networks         = optional(list(string), [])
+    dns_zone                 = optional(string)
   }))
   default = []
 }
@@ -46,6 +47,7 @@ variable "hcloud_server_config" {
     enable_delete_protection = optional(bool, false)
     private_networks         = optional(list(string), [])
     num_servers              = optional(number, 1)
+    dns_zone                 = optional(string)
   })
   default = {
     num_servers = 0
