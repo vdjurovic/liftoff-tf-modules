@@ -12,6 +12,7 @@ output "server_info" {
   value = merge({ for srv in digitalocean_droplet.droplet : srv.name => {
     public_ip_v4 = srv.ipv4_address
     dns_zone     = var.docean_server_config.dns_zone
+    provider     = "digitalocean"
     private_net_info = [{
       net_id     = data.digitalocean_vpc.target_vpcs[var.docean_server_config.vpc_name].id
       ip_address = srv.ipv4_address_private
@@ -20,6 +21,7 @@ output "server_info" {
     } }, { for srv in digitalocean_droplet.named_server : srv.name => {
     public_ip_v4 = srv.ipv4_address
     dns_zone     = local.srv_dns_map[srv.name]
+    provider     = "digitalocean"
     private_net_info = [{
       net_id     = data.digitalocean_vpc.target_vpcs[local.server_name_vpc_name_map[srv.name]].id
       ip_address = srv.ipv4_address_private

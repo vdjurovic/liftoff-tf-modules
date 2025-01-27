@@ -17,6 +17,7 @@ output "server_info" {
   value = merge({ for srv in hcloud_server.server : srv.name => {
     public_ip_v4 = srv.ipv4_address
     dns_zone     = var.hcloud_server_config.dns_zone
+    provider     = "hcloud"
     private_net_info = [
       for net in srv.network : {
         net_id     = net.network_id
@@ -29,6 +30,7 @@ output "server_info" {
     { for srv in hcloud_server.named_server : srv.name => {
       public_ip_v4 = srv.ipv4_address
       dns_zone     = local.srv_dns_map[srv.name]
+      provider     = "hcloud"
       private_net_info = [
         for net in srv.network : {
           net_id     = net.network_id
