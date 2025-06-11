@@ -3,7 +3,7 @@
 
 
 locals {
-  network_names = concat(var.hcloud_server_config.private_networks, flatten(var.hcloud_server_list[*].private_networks))
+  network_names = flatten(var.hcloud_server_list[*].private_networks)
 }
 
 data "hcloud_network" "networks" {

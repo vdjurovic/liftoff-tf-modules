@@ -24,7 +24,7 @@ jobs:
       - name: Configure version information
         id: calculate-version
         if: ${{ github.event_name == 'push' }}
-        uses: bitshifted/git-auto-semver@v1
+        uses: bitshifted/git-auto-semver@v2
         with:
           create_tag: true
           initial_version: 1.0.0

@@ -8,30 +8,23 @@ locals {
   projects_by_name_map = tomap({ for proj in data.digitalocean_projects.all_projects.projects : proj.name => proj })
   # unique project names from vars
   project_names_set = toset([for srv in var.docean_server_list : srv.project_name if srv.project_name != null && srv.project_name != "" && try(contains(keys(local.projects_by_name_map), srv.project_name), false)])
-  # map project names to server names
-  project_name_to_server_name_map = { for name in local.project_names_set : name => [for srv in var.docean_server_list : srv.server_name if srv.project_name == name] }
   # SSH key name to id map
   ssh_key_name_id_map = { for key in data.digitalocean_ssh_keys.required_ssh_keys.ssh_keys : key.name => key.id }
+  # map servers to format 'name-number' when more than one server is created
+  server_map = merge([
+    for srv in var.docean_server_list : {
+      for idx in range(srv.num_servers) :
+      "${srv.num_servers == 1 ? srv.server_name : "${srv.server_name}-${idx + 1}"}" => srv
+    }
+  ]...)
+  # map project names to server names
+  project_name_to_server_name_map = { for name in local.project_names_set : name => [for key, srv in local.server_map : key if srv.project_name == name] }
 }
 
-resource "digitalocean_droplet" "droplet" {
-  count       = var.docean_server_config.num_servers
-  name        = var.docean_server_config.num_servers > 1 ? "${var.docean_server_config.server_name}-${count.index}" : var.docean_server_config.server_name
-  image       = var.docean_server_config.os_image
-  size        = var.docean_server_config.instance_type
-  region      = var.docean_server_config.region
-  user_data   = var.docean_server_config.user_data_file_path != null ? file("${var.docean_server_config.user_data_file_path}") : null
-  ssh_keys    = toset([for kn in var.docean_server_config.ssh_key_names : local.ssh_key_name_id_map[kn]])
-  ipv6        = var.docean_server_config.enable_public_ipv6
-  tags        = length(var.docean_server_config.tags) > 0 ? var.docean_server_config.tags : var.global_tags
-  resize_disk = var.docean_server_config.resize_disk
-  backups     = var.docean_server_config.enable_backups
-  vpc_uuid    = var.docean_server_config.vpc_name != null ? data.digitalocean_vpc.target_vpcs[var.docean_server_config.vpc_name].id : null
-}
 
 resource "digitalocean_droplet" "named_server" {
-  for_each    = { for srv in var.docean_server_list : srv.server_name => srv }
-  name        = each.value.server_name
+  for_each    = local.server_map
+  name        = each.key
   image       = each.value.os_image
   size        = each.value.instance_type
   region      = each.value.region
@@ -51,10 +44,4 @@ resource "digitalocean_project_resources" "named_server_project_resources" {
   resources = [for srv_name in each.value : digitalocean_droplet.named_server[srv_name].urn]
 }
 
-# assign server config to project
-resource "digitalocean_project_resources" "server_config_project_resources" {
-  count     = var.docean_server_config.project_name != null ? 1 : 0
-  project   = local.projects_by_name_map[var.docean_server_config.project_name].id
-  resources = [for srv in digitalocean_droplet.droplet : srv.urn]
-}
 

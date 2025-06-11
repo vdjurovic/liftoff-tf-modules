@@ -3,14 +3,13 @@
 
 
 locals {
-  ssh_key_names = toset(flatten(concat([for srv in var.docean_server_list : srv.ssh_key_names if length(srv.ssh_key_names) > 0], var.docean_server_config.ssh_key_names)))
-  vpc_names     = [for srv in var.docean_server_list : srv.vpc_name if srv.vpc_name != null]
-  all_vpc_names = toset(var.docean_server_config.vpc_name != null ? concat(local.vpc_names, [var.docean_server_config.vpc_name]) : local.vpc_names)
+  ssh_key_names = toset(flatten([for srv in var.docean_server_list : srv.ssh_key_names if length(srv.ssh_key_names) > 0]))
+  vpc_names     = toset([for srv in var.docean_server_list : srv.vpc_name if srv.vpc_name != null])
 }
 
 
 data "digitalocean_vpc" "target_vpcs" {
-  for_each = local.all_vpc_names
+  for_each = local.vpc_names
   name     = each.key
 }
 
